@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.24.1)
+set(CMAKE_CXX_STANDARD 17)
+project(compiler)
+
+add_executable(compiler main.cpp)
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    message("OPENMP FOUND")
+    target_link_libraries(compiler PUBLIC OpenMP::OpenMP_CXX)
+endif()
