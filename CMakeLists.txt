@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.24.1)
+# set (CMAKE_C_COMPILER /opt/homebrew/opt/llvm/bin/clang)
+# set (CMAKE_CXX_COMPILER /opt/homebrew/opt/llvm/bin/clang++)
+# set (DFLAGS "-L/opt/homebrew/opt/libomp/lib")
+# set (CPPFLAGS "-I/opt/homebrew/opt/libomp/include")
+
 set(CMAKE_CXX_STANDARD 17)
 project(compiler)
 
@@ -8,3 +13,18 @@ if(OpenMP_CXX_FOUND)
     message("OPENMP FOUND")
     target_link_libraries(compiler PUBLIC OpenMP::OpenMP_CXX)
 endif()
+find_package(FLEX REQUIRED)
+if(FLEX_FOUND)
+    message("FLEX FOUND")
+    flex_target(lexer f.l "${CMAKE_CURRENT_BINARY_DIR}/F.cc")
+endif()
+# find_package(BISON REQUIRED)
+# if(FLEX_FOUND)
+#     message("BISON FOUND")
+#     bison_target(parser b.y "${CMAKE_CURRENT_BINARY_DIR}/B.cc")
+# endif()
+add_executable(fbanalysys "${CMAKE_CURRENT_BINARY_DIR}/F.cc")
+
+
+
+add_compile_options(-S -Wall)
