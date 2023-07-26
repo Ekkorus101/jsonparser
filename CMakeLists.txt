@@ -4,27 +4,26 @@ cmake_minimum_required(VERSION 3.24.1)
 # set (DFLAGS "-L/opt/homebrew/opt/libomp/lib")
 # set (CPPFLAGS "-I/opt/homebrew/opt/libomp/include")
 
-set(CMAKE_CXX_STANDARD 17)
 project(compiler)
 
-add_executable(compiler main.cpp)
+include_directories(./build)
 find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-    message("OPENMP FOUND")
-    target_link_libraries(compiler PUBLIC OpenMP::OpenMP_CXX)
-endif()
-find_package(FLEX REQUIRED)
-if(FLEX_FOUND)
-    message("FLEX FOUND")
-    flex_target(lexer f.l "${CMAKE_CURRENT_BINARY_DIR}/F.cc")
-endif()
-# find_package(BISON REQUIRED)
-# if(FLEX_FOUND)
-#     message("BISON FOUND")
-#     bison_target(parser b.y "${CMAKE_CURRENT_BINARY_DIR}/B.cc")
-# endif()
-add_executable(fbanalysys "${CMAKE_CURRENT_BINARY_DIR}/F.cc")
 
+set(SRC_DIR "src")
+set(PARSER_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
+find_package(FLEX 2.6 REQUIRED)
+find_package(BISON 3.0 REQUIRED)
 
-add_compile_options(-S -Wall)
+set(LEXER_OUT "${PARSER_DIR}/lexer.cpp")
+set(PARSER_OUT "${PARSER_DIR}/parser.cpp")
+
+flex_target(LEXER "${SRC_DIR}/lexer.l" "${LEXER_OUT}" DEFINES_FILE "${PARSER_DIR}/lexer.hpp")
+bison_target(PARSER "${SRC_DIR}/parser.y" "${PARSER_OUT}" DEFINES_FILE "${PARSER_DIR}/parser.hpp")
+add_flex_bison_dependency(LEXER PARSER)
+
+add_executable(calc "${SRC_DIR}/main.cpp" "${LEXER_OUT}" "${PARSER_OUT}")
+
+target_include_directories(calc PRIVATE "${PARSER_DIR}")
+
+# add_compile_options(-S -Wall)
