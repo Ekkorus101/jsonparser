@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.24.1)
-# set (CMAKE_C_COMPILER /opt/homebrew/opt/llvm/bin/clang)
-# set (CMAKE_CXX_COMPILER /opt/homebrew/opt/llvm/bin/clang++)
-# set (DFLAGS "-L/opt/homebrew/opt/libomp/lib")
-# set (CPPFLAGS "-I/opt/homebrew/opt/libomp/include")
+set (CMAKE_C_COMPILER /opt/homebrew/opt/llvm/bin/clang)
+set (CMAKE_CXX_COMPILER /opt/homebrew/opt/llvm/bin/clang++)
 
 project(compiler)
 
 include_directories(./build)
+include_directories(./src)
 find_package(OpenMP)
 
 set(SRC_DIR "src")
